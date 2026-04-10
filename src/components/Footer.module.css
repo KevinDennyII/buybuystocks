@@ -1,0 +1,20 @@
+.footer {
+  margin-block-start: auto;
+  padding-block: var(--space-lg);
+  border-block-start: 1px solid var(--color-border);
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-md);
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.left,
+.right {
+  margin: 0;
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,26 @@
+{
+  "title": "Trade journal",
+  "subtitle": "A running log of setups, outcomes, and lessons. Everything here lives in tradeJournal.json until you connect a database or API.",
+  "entries": [
+    {
+      "id": "example-1",
+      "date": "2026-04-01",
+      "symbol": "SPY",
+      "style": "Swing",
+      "side": "Long",
+      "setup": "Reclaim of prior session value with defined risk under the swing low.",
+      "outcome": "Scratch",
+      "lesson": "Honored the plan; a scratch beats an undefined loss."
+    },
+    {
+      "id": "example-2",
+      "date": "2026-04-03",
+      "symbol": "—",
+      "style": "Day trade",
+      "side": "Short",
+      "setup": "Add your playbook: time of day, catalyst, and invalidation.",
+      "outcome": "Win / loss / scratch",
+      "lesson": "One line on what you would repeat or change next time."
+    }
+  ]
+}

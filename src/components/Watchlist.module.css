@@ -1,0 +1,72 @@
+.section {
+  padding-block: var(--space-lg);
+}
+
+.header {
+  margin-bottom: var(--space-md);
+  max-width: 60ch;
+}
+
+.title {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-display);
+  font-size: var(--text-section);
+  letter-spacing: -0.02em;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-md);
+}
+
+@media (min-width: 40rem) {
+  .list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  height: 100%;
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.symbol {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+}
+
+.stance {
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.thesis {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+  flex: 1;
+}

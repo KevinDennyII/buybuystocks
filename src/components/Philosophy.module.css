@@ -1,0 +1,55 @@
+.section {
+  padding-block: var(--space-lg);
+}
+
+.card {
+  padding: var(--space-lg);
+  overflow: hidden;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 48rem) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.title {
+  margin: 0 0 var(--space-md);
+  font-family: var(--font-display);
+  font-size: var(--text-section);
+  letter-spacing: -0.02em;
+}
+
+.body {
+  margin: 0;
+  color: var(--color-text-muted);
+  max-width: 52ch;
+}
+
+.quote {
+  margin: 0;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--color-bg-deep) 65%, var(--color-surface));
+  border: 1px dashed color-mix(in oklab, var(--color-accent) 35%, var(--color-border));
+}
+
+.quote p {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  line-height: 1.55;
+  font-style: italic;
+}
+
+.attribution {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  font-style: normal;
+}

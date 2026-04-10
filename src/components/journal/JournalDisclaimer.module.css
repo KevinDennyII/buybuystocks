@@ -1,0 +1,27 @@
+.section {
+  padding-block: 0 var(--space-xl);
+}
+
+.box {
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in oklab, var(--color-text-muted) 28%, var(--color-border));
+  background: color-mix(in oklab, var(--color-surface) 88%, transparent);
+}
+
+.text {
+  margin: 0;
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  max-width: 65ch;
+}
+
+.link {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

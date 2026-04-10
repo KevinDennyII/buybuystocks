@@ -1,0 +1,23 @@
+.section {
+  padding-block: var(--space-md) var(--space-xl);
+}
+
+.box {
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in oklab, var(--color-text-muted) 35%, var(--color-border));
+  background: color-mix(in oklab, var(--color-surface) 88%, transparent);
+}
+
+.title {
+  margin: 0 0 var(--space-sm);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.body {
+  margin: 0;
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  max-width: 75ch;
+}

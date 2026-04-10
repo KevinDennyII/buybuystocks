@@ -1,0 +1,18 @@
+{
+  "title": "Ideas & watchlist",
+  "description": "Edit this file anytime — swap in real tickers and theses. When you outgrow JSON, this shape maps cleanly to a database row.",
+  "items": [
+    {
+      "id": "long-1",
+      "symbol": "—",
+      "stance": "Long-term",
+      "thesis": "Add your first conviction name here: what the business does, why you own or watch it, and what would change your mind."
+    },
+    {
+      "id": "active-1",
+      "symbol": "—",
+      "stance": "Active",
+      "thesis": "Day-trade or swing candidates: keep size small while the process is still in motion."
+    }
+  ]
+}
