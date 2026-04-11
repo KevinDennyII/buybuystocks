@@ -51,58 +51,56 @@ export function DashboardPage() {
           : 'Mock Data — Add API keys in .env for live quotes'}
       </div>
 
-      <div className={styles.grid}>
-        <div className={styles.watchlistCol}>
-          <div className={styles.card}>
-            <div className={styles.cardHeader}>
-              <span className={styles.cardTitle}>
-                Watchlist
-                <span className={styles.countBadge}>{count}</span>
-              </span>
-              <button className={styles.resetBtn} onClick={reset} title="Reset to defaults">
-                Reset
-              </button>
-            </div>
-            <SymbolSearch
-              onSelect={setSelected}
-              onAdd={handleAdd}
-              isWatching={isWatching}
-            />
-            {loading ? (
-              <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
-                Loading...
-              </div>
-            ) : (
-              <StockTable
-                stocks={stocks}
-                selectedSymbol={selected}
-                onSelect={setSelected}
-                onRemove={handleRemove}
-                onChangeStance={changeStance}
-              />
-            )}
+      <div className={styles.layout}>
+        {/* Row 1: full-width watchlist */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardTitle}>
+              Watchlist
+              <span className={styles.countBadge}>{count}</span>
+            </span>
+            <button className={styles.resetBtn} onClick={reset} title="Reset to defaults">
+              Reset
+            </button>
           </div>
+          <SymbolSearch
+            onSelect={setSelected}
+            onAdd={handleAdd}
+            isWatching={isWatching}
+          />
+          {loading ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+              Loading...
+            </div>
+          ) : (
+            <StockTable
+              stocks={stocks}
+              selectedSymbol={selected}
+              onSelect={setSelected}
+              onRemove={handleRemove}
+              onChangeStance={changeStance}
+            />
+          )}
         </div>
 
-        <div className={styles.chartCol}>
-          <div className={styles.card}>
+        {/* Row 2: Chart + Quote side by side */}
+        <div className={styles.twoUp}>
+          <div className={`${styles.card} ${styles.chartCard}`}>
             <StockChart symbol={selected} />
           </div>
-        </div>
-
-        <div className={styles.quoteCol}>
           <div className={styles.card}>
             <QuotePanel symbol={selected} />
           </div>
         </div>
-      </div>
 
-      <div className={styles.bottomRow}>
-        <div className={styles.card}>
-          <CorporateActions />
-        </div>
-        <div className={styles.card}>
-          <NewsPanel />
+        {/* Row 3: Corporate Actions + News side by side */}
+        <div className={styles.twoUp}>
+          <div className={styles.card}>
+            <CorporateActions />
+          </div>
+          <div className={styles.card}>
+            <NewsPanel />
+          </div>
         </div>
       </div>
     </section>
