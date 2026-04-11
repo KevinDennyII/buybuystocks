@@ -1,0 +1,50 @@
+.mobileNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: none;
+  grid-template-columns: repeat(5, 1fr);
+  background: color-mix(in oklab, var(--color-bg-deep) 90%, transparent);
+  border-top: 1px solid var(--color-border);
+  backdrop-filter: blur(14px);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.navLink {
+  min-height: 3.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.08rem;
+  text-decoration: none;
+  color: var(--color-text-muted);
+}
+
+.navLink:hover {
+  color: var(--color-accent);
+}
+
+.navLinkActive {
+  color: var(--color-accent);
+}
+
+.icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.label {
+  font-size: 0.64rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 40rem) {
+  .mobileNav {
+    display: grid;
+  }
+}

@@ -134,6 +134,12 @@ a:hover {
   flex: 1;
 }
 
+@media (max-width: 40rem) {
+  .main {
+    padding-bottom: 4.25rem;
+  }
+}
+
 .content-width {
   width: min(100% - var(--space-lg) * 2, var(--content-max));
   margin-inline: auto;

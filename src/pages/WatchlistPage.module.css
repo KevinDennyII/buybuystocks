@@ -20,6 +20,7 @@
 .actions {
   display: flex;
   gap: var(--space-xs);
+  flex-wrap: wrap;
 }
 
 .ghostBtn {
@@ -74,6 +75,7 @@
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s;
+  min-height: 2.75rem;
 }
 
 .addInput:focus {
@@ -104,6 +106,7 @@
   font-family: inherit;
   cursor: pointer;
   outline: none;
+  min-height: 2.75rem;
 }
 
 .stanceSelect:focus {
@@ -121,6 +124,7 @@
   cursor: pointer;
   white-space: nowrap;
   transition: opacity 0.15s;
+  min-height: 2.75rem;
 }
 
 .addBtn:hover {
@@ -250,8 +254,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 34px;
+  height: 34px;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -387,4 +391,43 @@
 .countNum {
   font-weight: 700;
   color: var(--color-accent);
+}
+
+@media (max-width: 48rem) {
+  .titleRow {
+    align-items: flex-start;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .ghostBtn {
+    flex: 1 1 calc(50% - var(--space-xs));
+    min-height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+  }
+
+  .addRow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xs);
+  }
+
+  .stanceSelect,
+  .addBtn {
+    width: 100%;
+    font-size: 0.92rem;
+  }
+
+  .addInput {
+    font-size: 1rem;
+  }
+
+  .addInput::placeholder {
+    font-size: 0.92rem;
+  }
 }
