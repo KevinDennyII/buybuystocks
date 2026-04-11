@@ -1,0 +1,67 @@
+.panel {
+  padding: var(--space-sm);
+}
+
+.title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-sm);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.table th {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  text-align: left;
+  padding: var(--space-xs) var(--space-xs);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table td {
+  padding: var(--space-xs);
+  border-bottom: 1px solid color-mix(in oklab, var(--color-border) 40%, transparent);
+}
+
+.typeBadge {
+  display: inline-block;
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.dividend {
+  background: color-mix(in oklab, #22c55e 18%, transparent);
+  color: #4ade80;
+}
+
+.split {
+  background: color-mix(in oklab, #3b82f6 18%, transparent);
+  color: #60a5fa;
+}
+
+.earnings {
+  background: color-mix(in oklab, #f59e0b 18%, transparent);
+  color: #fbbf24;
+}
+
+.empty {
+  padding: var(--space-md);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}

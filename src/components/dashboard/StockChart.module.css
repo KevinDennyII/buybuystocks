@@ -1,0 +1,71 @@
+.wrapper {
+  position: relative;
+  padding: var(--space-sm);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.symbolLabel {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.timeButtons {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.timeBtn {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-radius: 0;
+}
+
+.timeBtn:first-child {
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.timeBtn:last-child {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.timeBtnActive {
+  background: var(--color-accent);
+  color: var(--color-bg-deep);
+  border-color: var(--color-accent);
+}
+
+.chartContainer {
+  width: 100%;
+  height: 350px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 350px;
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+
+@media (max-width: 768px) {
+  .chartContainer {
+    height: 260px;
+  }
+}

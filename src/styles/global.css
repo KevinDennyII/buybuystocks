@@ -41,7 +41,7 @@
   --text-body: clamp(1rem, 0.35vw + 0.92rem, 1.08rem);
   --text-small: clamp(0.85rem, 0.2vw + 0.8rem, 0.95rem);
 
-  --content-max: 72rem;
+  --content-max: 82rem;
   --header-height: 4.25rem;
 }
 
@@ -160,4 +160,29 @@ a:hover {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+select,
+input[type="number"],
+input[type="tel"],
+input[type="text"] {
+  color-scheme: dark;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-text) 20%, transparent);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--color-text) 35%, transparent);
 }

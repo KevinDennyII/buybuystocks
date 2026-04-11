@@ -5,20 +5,20 @@
   },
   "nav": {
     "links": [
-      { "id": "philosophy", "label": "Why I'm here", "to": "/#philosophy" },
-      { "id": "focus", "label": "Focus", "to": "/#focus" },
-      { "id": "watchlist", "label": "Watchlist", "to": "/#watchlist" },
-      { "id": "journey", "label": "The journey", "to": "/#journey" },
+      { "id": "dashboard", "label": "Dashboard", "to": "/dashboard" },
+      { "id": "portfolio", "label": "Portfolio", "to": "/portfolio" },
+      { "id": "alerts", "label": "Alerts", "to": "/alerts" },
       { "id": "journal", "label": "Journal", "to": "/journal" },
-      { "id": "disclaimer", "label": "Note", "to": "/#disclaimer" }
+      { "id": "watchlist", "label": "Watchlist", "to": "/watchlist" },
+      { "id": "focus", "label": "Focus", "to": "/#focus" }
     ]
   },
   "hero": {
     "eyebrow": "Personal trading desk",
     "headline": "Trade smarter. Build patience. Grow the long game.",
     "subhead": "Branching beyond day trading into the kind of long-term positions that stories like Netflix and Amazon are made of — one careful step at a time.",
-    "primaryCta": { "label": "See the plan", "to": "/#focus" },
-    "secondaryCta": { "label": "Why baby steps", "to": "/#philosophy" }
+    "primaryCta": { "label": "Open Dashboard", "to": "/dashboard" },
+    "secondaryCta": { "label": "View Portfolio", "to": "/portfolio" }
   },
   "philosophy": {
     "title": "Why baby steps matter",

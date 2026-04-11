@@ -2,8 +2,8 @@ import { Link, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
 
 function isActiveNav(to, pathname, hash) {
-  if (to === '/journal') {
-    return pathname === '/journal';
+  if (to.startsWith('/') && !to.includes('#')) {
+    return pathname === to;
   }
   if (to.includes('#')) {
     const [pathPart, fragment] = to.split('#');

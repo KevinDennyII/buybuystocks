@@ -1,0 +1,224 @@
+.page {
+  padding: var(--space-md) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.pageTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-section);
+  margin: 0;
+}
+
+.pageSubtitle {
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+  margin: var(--space-xs) 0 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: var(--space-md);
+  align-items: start;
+}
+
+.card {
+  padding: var(--space-md);
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklab, var(--color-surface) 92%, white),
+    var(--color-surface)
+  );
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.cardTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 0 0 var(--space-md);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.input,
+.select {
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--color-accent);
+}
+
+.select {
+  cursor: pointer;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-mint));
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-bg-deep);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-top: var(--space-xs);
+}
+
+.submitBtn:hover {
+  opacity: 0.9;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.alertsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.alertItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-border) 40%, transparent);
+}
+
+.alertItem:last-child {
+  border-bottom: none;
+}
+
+.alertInfo {
+  flex: 1;
+}
+
+.alertSymbol {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.alertCondition {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-top: 0.1rem;
+}
+
+.alertDate {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+}
+
+.alertActions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.toggleBtn,
+.deleteBtn {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.toggleBtn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.deleteBtn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.activeTag {
+  display: inline-block;
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.tagOn {
+  background: color-mix(in oklab, #22c55e 18%, transparent);
+  color: #4ade80;
+}
+
+.tagOff {
+  background: color-mix(in oklab, var(--color-text-muted) 15%, transparent);
+  color: var(--color-text-muted);
+}
+
+.emptyAlerts {
+  padding: var(--space-lg);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+
+.futureNote {
+  padding: var(--space-md);
+  background: color-mix(in oklab, var(--color-accent) 6%, transparent);
+  border: 1px dashed color-mix(in oklab, var(--color-accent) 30%, transparent);
+  border-radius: var(--radius-md);
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.futureTitle {
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-bottom: var(--space-xs);
+}
+
+.featureList {
+  margin: var(--space-xs) 0 0;
+  padding-left: 1.2rem;
+}
+
+.featureList li {
+  margin-bottom: 0.3rem;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,122 @@
+.card {
+  padding: var(--space-md);
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklab, var(--color-surface) 92%, white),
+    var(--color-surface)
+  );
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-sm);
+}
+
+.wrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.82rem;
+}
+
+.table th {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  text-align: left;
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: 1px solid color-mix(in oklab, var(--color-border) 40%, transparent);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.table th:nth-child(n+3),
+.table td:nth-child(n+3) {
+  text-align: right;
+}
+
+.symbolCol {
+  font-weight: 700;
+}
+
+.nameCol {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.positive { color: #22c55e; }
+.negative { color: #ef4444; }
+
+.totalRow td {
+  font-weight: 700;
+  border-top: 2px solid var(--color-border);
+  border-bottom: none;
+  padding-top: var(--space-sm);
+}
+
+.stockPnl {
+  margin-top: var(--space-md);
+}
+
+.pnlTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.pnlList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pnlItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-border) 30%, transparent);
+}
+
+.pnlItem:last-child {
+  border-bottom: none;
+}
+
+.pnlSymbol {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.pnlName {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.pnlValue {
+  font-weight: 700;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}

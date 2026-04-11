@@ -1,0 +1,50 @@
+.page {
+  padding: var(--space-md) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.pageTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-section);
+  margin: 0;
+}
+
+.pageSubtitle {
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+  margin: var(--space-xs) 0 0;
+}
+
+.platformsNote {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
+.platformBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.55rem;
+  background: color-mix(in oklab, var(--color-accent) 10%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-accent) 20%, transparent);
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.platformLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-right: var(--space-xs);
+}
+
+@media (max-width: 768px) {
+  .page {
+    gap: var(--space-sm);
+  }
+}

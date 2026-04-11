@@ -1,0 +1,120 @@
+.wrapper {
+  position: relative;
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s;
+}
+
+.inputGroup:focus-within {
+  border-color: var(--color-accent);
+}
+
+.icon {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  min-width: 0;
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: var(--space-sm);
+  right: var(--space-sm);
+  margin-top: 2px;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: background 0.1s;
+  gap: var(--space-xs);
+}
+
+.option:hover {
+  background: color-mix(in oklab, var(--color-accent) 10%, transparent);
+}
+
+.optLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+  flex: 1;
+}
+
+.optSymbol {
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.optName {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.addBtn {
+  flex-shrink: 0;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid color-mix(in oklab, var(--color-accent) 40%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--color-accent) 10%, transparent);
+  color: var(--color-accent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.addBtn:hover {
+  background: var(--color-accent);
+  color: var(--color-bg-deep);
+}
+
+.watchedTag {
+  flex-shrink: 0;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, #22c55e 12%, transparent);
+  color: #4ade80;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
