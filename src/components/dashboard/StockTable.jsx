@@ -22,6 +22,18 @@ function changeColor(val) {
   return styles.neutral;
 }
 
+function assetTypeLabel(assetType) {
+  if (assetType === 'mutual_fund') return 'Mutual Fund';
+  if (assetType === 'etf') return 'ETF';
+  if (assetType === 'otc') return 'OTC';
+  if (assetType === 'stock') return 'Stock';
+  return 'Unknown';
+}
+
+function allowsPenny(assetType) {
+  return assetType === 'otc';
+}
+
 export function StockTable({ stocks, selectedSymbol, onSelect, onRemove, onChangeStance }) {
   if (!stocks.length) {
     return (
@@ -43,6 +55,7 @@ export function StockTable({ stocks, selectedSymbol, onSelect, onRemove, onChang
             <th>Change</th>
             <th>% Chg</th>
             <th>Volume</th>
+            <th>Type</th>
             <th>Stance</th>
             <th className={styles.actionsHeader}></th>
           </tr>
@@ -70,6 +83,9 @@ export function StockTable({ stocks, selectedSymbol, onSelect, onRemove, onChang
               </td>
               <td className={styles.volumeCell}>{formatVolume(stock.volume)}</td>
               <td>
+                <span className={styles.assetTypeTag}>{assetTypeLabel(stock.assetType)}</span>
+              </td>
+              <td>
                 {onChangeStance ? (
                   <select
                     className={`${styles.stanceSelect} ${stanceClass(stock.stance)}`}
@@ -82,7 +98,9 @@ export function StockTable({ stocks, selectedSymbol, onSelect, onRemove, onChang
                   >
                     <option value="Long-term">Long-term</option>
                     <option value="Active">Active</option>
-                    <option value="Penny / Speculative">Penny</option>
+                    <option value="Penny / Speculative" disabled={!allowsPenny(stock.assetType)}>
+                      Penny
+                    </option>
                   </select>
                 ) : (
                   <span className={`${styles.stanceTag} ${stanceClass(stock.stance)}`}>

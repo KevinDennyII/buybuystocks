@@ -129,6 +129,17 @@
   color: var(--color-text-muted);
 }
 
+.assetTypeTag {
+  display: inline-block;
+  padding: 0.14rem 0.35rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  border: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
+}
+
 .actionsHeader {
   width: 32px;
 }

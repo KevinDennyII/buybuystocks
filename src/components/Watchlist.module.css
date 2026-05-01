@@ -64,6 +64,14 @@
   letter-spacing: 0.06em;
 }
 
+.assetType {
+  display: inline-flex;
+  font-size: 0.63rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
 .thesis {
   margin: 0;
   color: var(--color-text-muted);

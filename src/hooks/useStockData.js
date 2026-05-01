@@ -45,8 +45,8 @@ export function useWatchlist() {
     return () => { mountedRef.current = false; };
   }, [symbolList, refresh]);
 
-  const addSymbol = useCallback((symbol, stance = 'Active') => {
-    const updated = storeAdd(symbol, stance);
+  const addSymbol = useCallback((symbol, stance = 'Active', details = {}) => {
+    const updated = storeAdd(symbol, stance, '', details);
     setSymbolList([...updated]);
   }, []);
 

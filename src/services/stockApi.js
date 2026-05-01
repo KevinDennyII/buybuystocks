@@ -26,11 +26,144 @@ const FINNHUB_KEY = import.meta.env.VITE_FINNHUB_KEY || '';
 const ALPHAVANTAGE_KEY = import.meta.env.VITE_ALPHAVANTAGE_KEY || '';
 const TWELVEDATA_KEY = import.meta.env.VITE_TWELVEDATA_KEY || '';
 const POLYGON_KEY = import.meta.env.VITE_POLYGON_KEY || '';
+const FMP_KEY = import.meta.env.VITE_FMP_KEY || '';
 
 const ALL_MOCK = [...WATCHLIST_STOCKS, ...PENNY_STOCKS];
+const OTC_DISCOVERY_FALLBACK = [
+  { symbol: 'HCMC', name: 'Healthier Choices Management Corp' },
+  { symbol: 'AITX', name: 'Artificial Intelligence Technology Solutions' },
+  { symbol: 'ILUS', name: 'ILUS International Inc' },
+  { symbol: 'OZSC', name: 'Ozop Energy Solutions Inc' },
+  { symbol: 'TLSS', name: 'Transportation and Logistics Systems Inc' },
+  { symbol: 'BIEL', name: 'BioElectronics Corp' },
+  { symbol: 'CBDL', name: 'CBD Life Sciences Inc' },
+  { symbol: 'MCOA', name: 'Marijuana Company of America Inc' },
+  { symbol: 'SIRC', name: 'Solar Integrated Roofing Corp' },
+  { symbol: 'ENZC', name: 'Enzolytics Inc' },
+];
 
 function findMock(symbol) {
   return ALL_MOCK.find((s) => s.symbol === symbol);
+}
+
+function mapAssetType(type, exchange = '') {
+  const t = (type || '').toString().toLowerCase();
+  const ex = (exchange || '').toString().toLowerCase();
+  if (t.includes('etf')) return 'etf';
+  if (t.includes('mutual') || t.includes('fund')) return 'mutual_fund';
+  if (t.includes('otc') || ex.includes('otc') || ex.includes('pink') || ex.includes('otcm')) return 'otc';
+  if (t.includes('stock') || t.includes('equity') || t.includes('common')) return 'stock';
+  return 'unknown';
+}
+
+function dedupeSymbols(items = []) {
+  const seen = new Set();
+  return items.filter((item) => {
+    if (!item?.symbol) return false;
+    const key = item.symbol.toUpperCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+async function finnhubSearch(query) {
+  if (!FINNHUB_KEY) return null;
+  try {
+    const res = await fetch(
+      `https://finnhub.io/api/v1/search?q=${encodeURIComponent(query)}&token=${FINNHUB_KEY}`
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data.result)) return null;
+    return data.result.map((item) => ({
+      symbol: (item.symbol || item.displaySymbol || '').toUpperCase(),
+      name: item.description || item.symbol || '',
+      exchange: item.mic || '',
+      assetType: mapAssetType(item.type, item.mic),
+      _source: 'finnhub',
+    }));
+  } catch {
+    return null;
+  }
+}
+
+async function twelveDataSearch(query) {
+  try {
+    const queryParams = new URLSearchParams({ symbol: query });
+    if (TWELVEDATA_KEY) queryParams.set('apikey', TWELVEDATA_KEY);
+    const res = await fetch(
+      `https://api.twelvedata.com/symbol_search?${queryParams.toString()}`
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data.data)) return null;
+    return data.data.map((item) => ({
+      symbol: (item.symbol || '').toUpperCase(),
+      name: item.instrument_name || item.symbol || '',
+      exchange: item.exchange || item.mic_code || '',
+      assetType: mapAssetType(item.instrument_type || item.type, item.exchange || item.mic_code),
+      _source: 'twelvedata',
+    }));
+  } catch {
+    return null;
+  }
+}
+
+async function fmpOtcSearch(query, limit = 25) {
+  if (!FMP_KEY) return null;
+  try {
+    const res = await fetch(
+      `https://financialmodelingprep.com/api/v3/search?query=${encodeURIComponent(query)}&limit=${limit}&exchange=OTC&apikey=${FMP_KEY}`
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data)) return null;
+    return data.map((item) => ({
+      symbol: (item.symbol || '').toUpperCase(),
+      name: item.name || item.symbol || '',
+      exchange: item.exchangeShortName || item.exchange || 'OTC',
+      assetType: 'otc',
+      _source: 'fmp',
+    }));
+  } catch {
+    return null;
+  }
+}
+
+function mockSearch(query) {
+  const lower = query.toLowerCase();
+  const results = ALL_MOCK.filter(
+    (s) =>
+      s.symbol.toLowerCase().includes(lower) ||
+      s.name.toLowerCase().includes(lower)
+  ).map((s) => ({
+    symbol: s.symbol,
+    name: s.name,
+    exchange: '',
+    assetType: s.stance?.toLowerCase().includes('penny') ? 'otc' : 'stock',
+    _source: 'mock',
+  }));
+  return dedupeSymbols(results);
+}
+
+function otcFallbackSearch(query) {
+  const lower = query.toLowerCase();
+  return OTC_DISCOVERY_FALLBACK
+    .filter((s) => s.symbol.toLowerCase().includes(lower) || s.name.toLowerCase().includes(lower))
+    .map((s) => ({
+      symbol: s.symbol,
+      name: s.name,
+      exchange: 'OTC',
+      assetType: 'otc',
+      _source: 'fallback',
+    }));
+}
+
+function normalizeSymbolSearchResults(items = [], limit = 8) {
+  return dedupeSymbols(items)
+    .filter((item) => item.symbol && item.name)
+    .slice(0, limit);
 }
 
 // ─── Finnhub: real-time quote ───────────────────────────────────────────────
@@ -234,6 +367,52 @@ async function polygonPrevClose(symbol) {
   }
 }
 
+// ─── Public API: symbol search ──────────────────────────────────────────────
+
+export async function fetchSymbolSearch(query, limit = 8, options = {}) {
+  const typeFilter = options.assetType || null;
+  const q = (query || '').trim();
+  if (!q) return [];
+  const mock = mockSearch(q);
+  const otcFallback = otcFallbackSearch(q);
+
+  if (typeFilter === 'otc') {
+    const fmp = await fmpOtcSearch(q, Math.max(limit * 3, 20));
+    if (fmp && fmp.length > 0) return normalizeSymbolSearchResults([...fmp, ...otcFallback, ...mock], limit);
+
+    const fh = await finnhubSearch(q);
+    if (fh && fh.length > 0) {
+      const otcOnly = fh.filter((item) => item.assetType === 'otc');
+      return normalizeSymbolSearchResults([...otcOnly, ...otcFallback, ...mock], limit);
+    }
+
+    const td = await twelveDataSearch(q);
+    if (td && td.length > 0) {
+      const otcOnly = td.filter((item) => item.assetType === 'otc');
+      return normalizeSymbolSearchResults([...otcOnly, ...otcFallback, ...mock], limit);
+    }
+
+    return normalizeSymbolSearchResults([...otcFallback, ...mock], limit);
+  }
+
+  // Prefer provider-backed search, but always merge known local matches so
+  // OTC/penny suggestions remain visible even when provider metadata is sparse.
+  const fh = await finnhubSearch(q);
+  if (fh && fh.length > 0) return normalizeSymbolSearchResults([...fh, ...mock], limit);
+
+  const td = await twelveDataSearch(q);
+  if (td && td.length > 0) return normalizeSymbolSearchResults([...td, ...mock], limit);
+
+  return normalizeSymbolSearchResults(mock, limit);
+}
+
+export async function resolveSymbol(query, options = {}) {
+  const symbol = (query || '').trim().toUpperCase();
+  if (!symbol) return null;
+  const results = await fetchSymbolSearch(symbol, 20, options);
+  return results.find((item) => item.symbol === symbol) ?? null;
+}
+
 // ─── Public API: quotes ─────────────────────────────────────────────────────
 
 export async function fetchQuote(symbol) {
@@ -269,9 +448,16 @@ export async function fetchWatchlist(symbolList) {
   const symbols = symbolList ?? WATCHLIST_STOCKS.map((s) => ({ symbol: s.symbol, stance: s.stance }));
 
   const enriched = await Promise.all(
-    symbols.map(async ({ symbol, stance }) => {
+    symbols.map(async ({ symbol, stance, name, exchange, assetType }) => {
       const mock = findMock(symbol);
-      const base = mock ?? { symbol, name: symbol, stance };
+      const base = {
+        ...(mock ?? {}),
+        symbol,
+        name: name || mock?.name || symbol,
+        exchange: exchange || '',
+        assetType: assetType || (mock?.stance?.toLowerCase().includes('penny') ? 'otc' : 'stock'),
+        stance,
+      };
 
       const live = await finnhubQuote(symbol).catch(() => null);
       if (live) return { ...base, ...live, stance, _source: 'finnhub' };

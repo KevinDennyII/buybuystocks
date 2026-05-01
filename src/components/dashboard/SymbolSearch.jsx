@@ -1,25 +1,43 @@
 import { useState, useRef, useEffect } from 'react';
-import { WATCHLIST_STOCKS, PENNY_STOCKS } from '../../data/mockStockData.js';
+import { fetchSymbolSearch } from '../../services/stockApi.js';
 import styles from './SymbolSearch.module.css';
 
-const ALL_STOCKS = [...WATCHLIST_STOCKS, ...PENNY_STOCKS];
+function assetTypeLabel(assetType) {
+  if (assetType === 'mutual_fund') return 'Mutual Fund';
+  if (assetType === 'etf') return 'ETF';
+  if (assetType === 'otc') return 'OTC';
+  if (assetType === 'stock') return 'Stock';
+  return 'Unknown';
+}
 
 export function SymbolSearch({ onSelect, onAdd, isWatching }) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
+  const [results, setResults] = useState([]);
+  const [searching, setSearching] = useState(false);
   const wrapperRef = useRef(null);
+  const searchSeqRef = useRef(0);
 
-  const filtered = query.length > 0
-    ? ALL_STOCKS.filter(
-        (s) =>
-          s.symbol.toLowerCase().includes(query.toLowerCase()) ||
-          s.name.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 8)
-    : [];
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([]);
+      setSearching(false);
+      return;
+    }
 
-  const exactMatch = query.length > 0 && !filtered.some(
-    (s) => s.symbol.toLowerCase() === query.toLowerCase()
-  );
+    const currentSeq = ++searchSeqRef.current;
+    setSearching(true);
+
+    const t = setTimeout(async () => {
+      const next = await fetchSymbolSearch(query, 8).catch(() => []);
+      if (searchSeqRef.current === currentSeq) {
+        setResults(next);
+        setSearching(false);
+      }
+    }, 220);
+
+    return () => clearTimeout(t);
+  }, [query]);
 
   useEffect(() => {
     function handleClick(e) {
@@ -37,9 +55,9 @@ export function SymbolSearch({ onSelect, onAdd, isWatching }) {
     setOpen(false);
   }
 
-  function handleAdd(symbol, e) {
+  function handleAdd(item, e) {
     e.stopPropagation();
-    if (onAdd) onAdd(symbol);
+    if (onAdd) onAdd(item);
   }
 
   return (
@@ -58,9 +76,12 @@ export function SymbolSearch({ onSelect, onAdd, isWatching }) {
           onFocus={() => query && setOpen(true)}
         />
       </div>
-      {open && (filtered.length > 0 || exactMatch) && (
+      {open && (results.length > 0 || searching || query.trim()) && (
         <div className={styles.dropdown}>
-          {filtered.map((s) => {
+          {searching && (
+            <div className={styles.emptyNote}>Searching symbols...</div>
+          )}
+          {!searching && results.map((s) => {
             const watched = isWatching?.(s.symbol);
             return (
               <div
@@ -70,14 +91,20 @@ export function SymbolSearch({ onSelect, onAdd, isWatching }) {
               >
                 <div className={styles.optLeft}>
                   <span className={styles.optSymbol}>{s.symbol}</span>
-                  <span className={styles.optName}>{s.name}</span>
+                  <div className={styles.optMeta}>
+                    <span className={styles.optName}>{s.name}</span>
+                    <span className={styles.optType}>
+                      {assetTypeLabel(s.assetType)}
+                      {s.exchange ? ` - ${s.exchange}` : ''}
+                    </span>
+                  </div>
                 </div>
                 {watched ? (
                   <span className={styles.watchedTag}>Watching</span>
                 ) : (
                   <button
                     className={styles.addBtn}
-                    onClick={(e) => handleAdd(s.symbol, e)}
+                    onClick={(e) => handleAdd(s, e)}
                     title={`Add ${s.symbol} to watchlist`}
                   >
                     + Add
@@ -86,29 +113,8 @@ export function SymbolSearch({ onSelect, onAdd, isWatching }) {
               </div>
             );
           })}
-          {exactMatch && query.length >= 1 && (
-            <div
-              className={styles.option}
-              onClick={() => {
-                const sym = query.toUpperCase();
-                if (onAdd) onAdd(sym);
-                handleSelect(sym);
-              }}
-            >
-              <div className={styles.optLeft}>
-                <span className={styles.optSymbol}>{query.toUpperCase()}</span>
-                <span className={styles.optName}>Add custom symbol</span>
-              </div>
-              <button
-                className={styles.addBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onAdd) onAdd(query.toUpperCase());
-                }}
-              >
-                + Add
-              </button>
-            </div>
+          {!searching && query.trim() && results.length === 0 && (
+            <div className={styles.emptyNote}>No matching symbols found.</div>
           )}
         </div>
       )}

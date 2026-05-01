@@ -90,6 +90,18 @@
   text-overflow: ellipsis;
 }
 
+.optMeta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.optType {
+  color: var(--color-text-muted);
+  font-size: 0.64rem;
+  letter-spacing: 0.02em;
+}
+
 .addBtn {
   flex-shrink: 0;
   padding: 0.2rem 0.5rem;
@@ -117,4 +129,10 @@
   color: #4ade80;
   font-size: 0.65rem;
   font-weight: 600;
+}
+
+.emptyNote {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
 }

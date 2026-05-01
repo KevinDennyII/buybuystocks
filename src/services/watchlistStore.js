@@ -1,19 +1,42 @@
 const STORAGE_KEY = 'bbs_watchlist';
 
 const DEFAULT_SYMBOLS = [
-  { symbol: 'AAPL', stance: 'Long-term', notes: '' },
-  { symbol: 'GOOG', stance: 'Long-term', notes: '' },
-  { symbol: 'NVDA', stance: 'Active', notes: '' },
-  { symbol: 'MSFT', stance: 'Long-term', notes: '' },
-  { symbol: 'TSLA', stance: 'Active', notes: '' },
-  { symbol: 'AMZN', stance: 'Long-term', notes: '' },
-  { symbol: 'CSIQ', stance: 'Active', notes: '' },
-  { symbol: 'CVS', stance: 'Long-term', notes: '' },
-  { symbol: 'ALLY', stance: 'Active', notes: '' },
-  { symbol: 'DFS', stance: 'Long-term', notes: '' },
-  { symbol: 'BABA', stance: 'Active', notes: '' },
-  { symbol: 'SOFI', stance: 'Active', notes: '' },
+  { symbol: 'AAPL', stance: 'Long-term', notes: '', assetType: 'stock' },
+  { symbol: 'GOOG', stance: 'Long-term', notes: '', assetType: 'stock' },
+  { symbol: 'NVDA', stance: 'Active', notes: '', assetType: 'stock' },
+  { symbol: 'MSFT', stance: 'Long-term', notes: '', assetType: 'stock' },
+  { symbol: 'TSLA', stance: 'Active', notes: '', assetType: 'stock' },
+  { symbol: 'AMZN', stance: 'Long-term', notes: '', assetType: 'stock' },
+  { symbol: 'CSIQ', stance: 'Active', notes: '', assetType: 'stock' },
+  { symbol: 'CVS', stance: 'Long-term', notes: '', assetType: 'stock' },
+  { symbol: 'ALLY', stance: 'Active', notes: '', assetType: 'stock' },
+  { symbol: 'DFS', stance: 'Long-term', notes: '', assetType: 'stock' },
+  { symbol: 'BABA', stance: 'Active', notes: '', assetType: 'stock' },
+  { symbol: 'SOFI', stance: 'Active', notes: '', assetType: 'stock' },
 ];
+
+function normalizeAssetType(assetType) {
+  if (!assetType) return 'unknown';
+  const normalized = assetType.toString().trim().toLowerCase().replace(/[\s-]+/g, '_');
+  if (normalized === 'mutualfund' || normalized === 'mutual_fund') return 'mutual_fund';
+  if (normalized === 'etf') return 'etf';
+  if (normalized === 'stock' || normalized === 'equity') return 'stock';
+  if (normalized === 'otc') return 'otc';
+  return 'unknown';
+}
+
+function isPennyStance(stance) {
+  return (stance || '').toLowerCase().includes('penny');
+}
+
+function normalizeStanceForAssetType(stance, assetType) {
+  const safeStance = stance || 'Active';
+  const normalizedType = normalizeAssetType(assetType);
+  if (isPennyStance(safeStance) && normalizedType !== 'otc') {
+    return 'Active';
+  }
+  return safeStance;
+}
 
 function read() {
   try {
@@ -23,7 +46,11 @@ function read() {
     if (!Array.isArray(parsed) || parsed.length === 0) return null;
     return parsed.map((item) => ({
       notes: '',
+      name: '',
+      exchange: '',
       ...item,
+      symbol: (item.symbol || '').toUpperCase(),
+      assetType: normalizeAssetType(item.assetType),
     }));
   } catch {
     return null;
@@ -42,10 +69,19 @@ export function saveWatchlist(items) {
   write(items);
 }
 
-export function addToWatchlist(symbol, stance = 'Active', notes = '') {
+export function addToWatchlist(symbol, stance = 'Active', notes = '', details = {}) {
   const items = loadWatchlist();
-  if (items.some((i) => i.symbol === symbol)) return items;
-  const updated = [...items, { symbol: symbol.toUpperCase(), stance, notes }];
+  const normalizedSymbol = symbol.toUpperCase();
+  if (items.some((i) => i.symbol === normalizedSymbol)) return items;
+  const normalizedAssetType = normalizeAssetType(details.assetType);
+  const updated = [...items, {
+    symbol: normalizedSymbol,
+    stance: normalizeStanceForAssetType(stance, normalizedAssetType),
+    notes,
+    name: details.name ?? '',
+    exchange: details.exchange ?? '',
+    assetType: normalizedAssetType,
+  }];
   write(updated);
   return updated;
 }
@@ -60,7 +96,9 @@ export function removeFromWatchlist(symbol) {
 export function updateStance(symbol, stance) {
   const items = loadWatchlist();
   const updated = items.map((i) =>
-    i.symbol === symbol ? { ...i, stance } : i
+    i.symbol === symbol
+      ? { ...i, stance: normalizeStanceForAssetType(stance, i.assetType) }
+      : i
   );
   write(updated);
   return updated;

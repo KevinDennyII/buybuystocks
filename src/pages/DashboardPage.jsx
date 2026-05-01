@@ -22,8 +22,14 @@ export function DashboardPage() {
   } = useWatchlist();
   const [selected, setSelected] = useState('AAPL');
 
-  function handleAdd(symbol) {
-    addSymbol(symbol);
+  function handleAdd(item) {
+    const symbol = item?.symbol ?? item;
+    if (!symbol) return;
+    addSymbol(symbol, 'Active', {
+      name: item?.name,
+      exchange: item?.exchange,
+      assetType: item?.assetType,
+    });
     setSelected(symbol);
   }
 

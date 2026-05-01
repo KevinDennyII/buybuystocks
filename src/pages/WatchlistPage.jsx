@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useWatchlist } from '../hooks/useStockData.js';
 import { WATCHLIST_STOCKS, PENNY_STOCKS } from '../data/mockStockData.js';
+import { fetchSymbolSearch, resolveSymbol } from '../services/stockApi.js';
 import styles from './WatchlistPage.module.css';
 
 const ALL_KNOWN = [...WATCHLIST_STOCKS, ...PENNY_STOCKS];
@@ -11,12 +12,46 @@ function findKnown(symbol) {
   return ALL_KNOWN.find((s) => s.symbol === symbol);
 }
 
+function inferKnownAssetType(symbol) {
+  const known = findKnown(symbol);
+  if (!known) return 'unknown';
+  return known.stance?.toLowerCase().includes('penny') ? 'otc' : 'stock';
+}
+
+function assetTypeLabel(assetType) {
+  if (assetType === 'mutual_fund') return 'Mutual Fund';
+  if (assetType === 'etf') return 'ETF';
+  if (assetType === 'otc') return 'OTC';
+  if (assetType === 'stock') return 'Stock';
+  return 'Unknown';
+}
+
 function stanceClass(stance) {
   if (!stance) return styles.stanceActive;
   const l = stance.toLowerCase();
   if (l.includes('long')) return styles.stanceLong;
   if (l.includes('penny') || l.includes('speculative')) return styles.stancePenny;
   return styles.stanceActive;
+}
+
+function allowsPenny(assetType) {
+  return assetType === 'otc';
+}
+
+function normalizeStanceForAssetType(stance, assetType) {
+  if (stance === 'Penny / Speculative' && !allowsPenny(assetType)) return 'Active';
+  return stance;
+}
+
+function stanceMatchesAssetType(stance, assetType) {
+  const type = assetType || 'unknown';
+  if (stance === 'Penny / Speculative') return type === 'otc';
+  return type === 'stock' || type === 'etf' || type === 'mutual_fund' || type === 'unknown';
+}
+
+function selectedTypeHint(stance) {
+  if (stance === 'Penny / Speculative') return 'OTC';
+  return 'Stock / ETF / Mutual Fund';
 }
 
 export function WatchlistPage() {
@@ -38,15 +73,38 @@ export function WatchlistPage() {
   const [query, setQuery] = useState('');
   const [addStance, setAddStance] = useState('Active');
   const [dropOpen, setDropOpen] = useState(false);
+  const [results, setResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [addError, setAddError] = useState('');
   const wrapRef = useRef(null);
+  const searchSeqRef = useRef(0);
 
-  const filtered = query.length > 0
-    ? ALL_KNOWN.filter(
-        (s) =>
-          s.symbol.toLowerCase().includes(query.toLowerCase()) ||
-          s.name.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 8)
-    : [];
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([]);
+      setSearching(false);
+      setAddError('');
+      return;
+    }
+
+    const currentSeq = ++searchSeqRef.current;
+    setSearching(true);
+
+    const t = setTimeout(async () => {
+      const next = await fetchSymbolSearch(
+        query,
+        8,
+        { assetType: addStance === 'Penny / Speculative' ? 'otc' : undefined }
+      ).catch(() => []);
+      if (searchSeqRef.current === currentSeq) {
+        setResults(next.filter((item) => stanceMatchesAssetType(addStance, item.assetType)));
+        setSearching(false);
+      }
+    }, 220);
+
+    return () => clearTimeout(t);
+  }, [query, addStance]);
 
   useEffect(() => {
     function onClick(e) {
@@ -56,16 +114,44 @@ export function WatchlistPage() {
     return () => document.removeEventListener('mousedown', onClick);
   }, []);
 
-  function handleAdd(symbol) {
-    addSymbol(symbol, addStance);
+  function handleAdd(item) {
+    const symbol = item?.symbol ?? query.trim().toUpperCase();
+    if (!symbol) return;
+    setAddError('');
+    const resolvedAssetType = item?.assetType ?? inferKnownAssetType(symbol);
+    const safeStance = normalizeStanceForAssetType(addStance, resolvedAssetType);
+    addSymbol(symbol, safeStance, {
+      name: item?.name ?? symbol,
+      exchange: item?.exchange ?? '',
+      assetType: resolvedAssetType,
+    });
+    if (safeStance !== addStance) setAddStance(safeStance);
     setQuery('');
     setDropOpen(false);
   }
 
-  function handleAddFromInput() {
-    const sym = query.trim().toUpperCase();
-    if (!sym) return;
-    handleAdd(sym);
+  async function handleAddFromInput() {
+    const symbol = query.trim().toUpperCase();
+    if (!symbol) return;
+    setAddError('');
+    setAdding(true);
+    try {
+      const exact = results.find((r) => r.symbol === symbol) ?? await resolveSymbol(
+        symbol,
+        { assetType: addStance === 'Penny / Speculative' ? 'otc' : undefined }
+      );
+      if (!exact) {
+        setAddError('Symbol not found. Select a real ticker from search results.');
+        return;
+      }
+      if (!stanceMatchesAssetType(addStance, exact.assetType)) {
+        setAddError(`Selected type filter is ${selectedTypeHint(addStance)}. Choose a matching symbol.`);
+        return;
+      }
+      handleAdd(exact);
+    } finally {
+      setAdding(false);
+    }
   }
 
   return (
@@ -98,28 +184,42 @@ export function WatchlistPage() {
               type="text"
               placeholder="Search by ticker or company name..."
               value={query}
-              onChange={(e) => { setQuery(e.target.value); setDropOpen(true); }}
+              onChange={(e) => { setQuery(e.target.value); setDropOpen(true); setAddError(''); }}
               onFocus={() => query && setDropOpen(true)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleAddFromInput();
               }}
             />
-            {dropOpen && filtered.length > 0 && (
+            {dropOpen && query.trim() && (
               <div className={styles.dropdown}>
-                {filtered.map((s) => {
+                {searching && (
+                  <div className={styles.dropdownInfo}>Searching symbols...</div>
+                )}
+                {!searching && results.map((s) => {
                   const watched = isWatching(s.symbol);
                   return (
                     <div
                       key={s.symbol}
                       className={styles.dropdownItem}
-                      onClick={() => !watched && handleAdd(s.symbol)}
+                      onClick={() => !watched && handleAdd(s)}
                     >
                       <span className={styles.dropSym}>{s.symbol}</span>
-                      <span className={styles.dropName}>{s.name}</span>
+                      <span className={styles.dropName}>
+                        {s.name}
+                        <span className={styles.dropMeta}>
+                          {assetTypeLabel(s.assetType)}
+                          {s.exchange ? ` - ${s.exchange}` : ''}
+                        </span>
+                      </span>
                       {watched && <span className={styles.dropWatched}>Watching</span>}
                     </div>
                   );
                 })}
+                {!searching && results.length === 0 && (
+                  <div className={styles.dropdownInfo}>
+                    No matching {selectedTypeHint(addStance)} symbols found.
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -135,11 +235,12 @@ export function WatchlistPage() {
           <button
             className={styles.addBtn}
             onClick={handleAddFromInput}
-            disabled={!query.trim()}
+            disabled={!query.trim() || adding}
           >
-            + Add
+            {adding ? 'Validating...' : '+ Add'}
           </button>
         </div>
+        {addError && <p className={styles.addError}>{addError}</p>}
       </div>
 
       <p className={styles.countInfo}>
@@ -161,6 +262,8 @@ export function WatchlistPage() {
             const enriched = stocks.find((s) => s.symbol === item.symbol);
             const known = findKnown(item.symbol);
             const name = enriched?.name ?? known?.name ?? item.symbol;
+            const assetType = item.assetType || enriched?.assetType || inferKnownAssetType(item.symbol);
+            const canUsePenny = allowsPenny(assetType);
             const price = enriched?.lastPrice;
             const change = enriched?.change;
             const changePct = enriched?.changePercent;
@@ -171,6 +274,7 @@ export function WatchlistPage() {
                   <div>
                     <div className={styles.cardSymbol}>{item.symbol}</div>
                     <div className={styles.cardName}>{name}</div>
+                    <div className={styles.assetTypeTag}>{assetTypeLabel(assetType)}</div>
                   </div>
                   <div className={styles.cardActions}>
                     <button
@@ -206,8 +310,13 @@ export function WatchlistPage() {
                   {STANCES.map((s) => (
                     <button
                       key={s}
-                      className={`${styles.stanceTag} ${stanceClass(s)} ${item.stance === s ? styles.stanceTagSelected : ''}`}
-                      onClick={() => changeStance(item.symbol, s)}
+                      className={`${styles.stanceTag} ${stanceClass(s)} ${item.stance === s ? styles.stanceTagSelected : ''} ${s === 'Penny / Speculative' && !canUsePenny ? styles.stanceTagDisabled : ''}`}
+                      onClick={() => {
+                        if (s === 'Penny / Speculative' && !canUsePenny) return;
+                        changeStance(item.symbol, s);
+                      }}
+                      disabled={s === 'Penny / Speculative' && !canUsePenny}
+                      title={s === 'Penny / Speculative' && !canUsePenny ? 'Penny stance is only available for OTC symbols.' : undefined}
                     >
                       {s === 'Penny / Speculative' ? 'Penny' : s}
                     </button>
