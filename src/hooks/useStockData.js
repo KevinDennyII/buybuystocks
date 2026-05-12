@@ -9,6 +9,7 @@ import {
   fetchCumulativePnL,
   fetchStockPnL,
   fetchNews,
+  fetchCompanyNews,
   fetchCorporateActions,
   fetchAlerts,
   fetchPennyStocks,
@@ -184,19 +185,21 @@ export function useStockPnL() {
   return data;
 }
 
-export function useNews() {
+export function useNews(symbol = '', refreshKey = 0) {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     let cancelled = false;
-    fetchNews().then((result) => {
+    setLoading(true);
+    const loader = symbol ? fetchCompanyNews(symbol) : fetchNews();
+    loader.then((result) => {
       if (!cancelled) {
         setNews(result);
         setLoading(false);
       }
     });
     return () => { cancelled = true; };
-  }, []);
+  }, [symbol, refreshKey]);
   return { news, loading };
 }
 

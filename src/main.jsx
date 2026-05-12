@@ -1,10 +1,8 @@
 import { StrictMode, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary.jsx';
 import { AppLayout } from './layouts/AppLayout.jsx';
-import { HomePage } from './pages/HomePage.jsx';
-import { JournalPage } from './pages/JournalPage.jsx';
 import './styles/global.css';
 
 const DashboardPage = lazy(() =>
@@ -32,12 +30,11 @@ createRoot(rootElement).render(
       <BrowserRouter>
         <Routes>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/dashboard" element={<Suspense fallback={<Loading />}><DashboardPage /></Suspense>} />
+            <Route path="/" element={<Suspense fallback={<Loading />}><DashboardPage /></Suspense>} />
+            <Route path="/dashboard" element={<Navigate to="/" replace />} />
             <Route path="/portfolio" element={<Suspense fallback={<Loading />}><PortfolioPage /></Suspense>} />
             <Route path="/alerts" element={<Suspense fallback={<Loading />}><AlertsPage /></Suspense>} />
             <Route path="/watchlist" element={<Suspense fallback={<Loading />}><WatchlistPage /></Suspense>} />
-            <Route path="/journal" element={<JournalPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

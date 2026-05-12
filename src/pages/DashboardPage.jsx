@@ -17,10 +17,12 @@ export function DashboardPage() {
     removeSymbol,
     changeStance,
     reset,
+    refresh,
     isWatching,
     count,
   } = useWatchlist();
   const [selected, setSelected] = useState('AAPL');
+  const [refreshKey, setRefreshKey] = useState(0);
 
   function handleAdd(item) {
     const symbol = item?.symbol ?? item;
@@ -41,20 +43,30 @@ export function DashboardPage() {
     }
   }
 
+  async function handleRefreshAll() {
+    await refresh();
+    setRefreshKey((prev) => prev + 1);
+  }
+
   return (
     <section className={`content-width ${styles.page}`}>
       <h1 className={styles.pageTitle}>
-        <span className="text-gradient">Trading Desk</span>
+        <span className="text-gradient">Watchlist & News Hub</span>
       </h1>
       <p className={styles.pageSubtitle}>
-        Your watchlist, charts, and market intel — all in one place.
+        Follow your symbols, monitor price action, and catch the latest ticker-specific headlines.
       </p>
 
-      <div className={styles.dataSource}>
-        <span className={`${styles.sourceDot} ${API_STATUS.isLive ? styles.sourceDotLive : ''}`} />
-        {API_STATUS.isLive
-          ? `Live Data: ${API_STATUS.provider}`
-          : 'Mock Data — Add API keys in .env for live quotes'}
+      <div className={styles.topRow}>
+        <div className={styles.dataSource}>
+          <span className={`${styles.sourceDot} ${API_STATUS.isLive ? styles.sourceDotLive : ''}`} />
+          {API_STATUS.isLive
+            ? `Live Data: ${API_STATUS.provider}`
+            : 'Mock Data — Add API keys in .env for live quotes'}
+        </div>
+        <button className={styles.refreshBtn} onClick={handleRefreshAll}>
+          Refresh Watchlist + News
+        </button>
       </div>
 
       <div className={styles.layout}>
@@ -105,7 +117,7 @@ export function DashboardPage() {
             <CorporateActions />
           </div>
           <div className={styles.card}>
-            <NewsPanel />
+            <NewsPanel symbol={selected} refreshKey={refreshKey} />
           </div>
         </div>
       </div>

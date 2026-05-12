@@ -3,7 +3,7 @@ import styles from './QuickNav.module.css';
 
 const ITEMS = [
   {
-    to: '/dashboard',
+    to: '/',
     icon: '\u{1F4CA}',
     iconClass: 'iconDashboard',
     title: 'Trading Desk',
@@ -33,14 +33,6 @@ const ITEMS = [
     title: 'Price Alerts',
     desc: 'Set price thresholds and get notified. SMS text alerts coming soon.',
     badge: 'soon',
-  },
-  {
-    to: '/journal',
-    icon: '\u{1F4DD}',
-    iconClass: 'iconJournal',
-    title: 'Trade Journal',
-    desc: 'Log every trade: setup, outcome, and lessons learned. Build your process.',
-    badge: null,
   },
 ];
 

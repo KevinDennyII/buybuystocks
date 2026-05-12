@@ -1,15 +1,20 @@
 import { useNews } from '../../hooks/useStockData.js';
 import styles from './NewsPanel.module.css';
 
-export function NewsPanel() {
-  const { news, loading } = useNews();
+export function NewsPanel({ symbol = '', title, refreshKey = 0 }) {
+  const { news, loading } = useNews(symbol, refreshKey);
+  const panelTitle = title || (symbol ? `News: ${symbol}` : 'News');
 
   return (
     <div className={styles.panel}>
-      <h3 className={styles.title}>News</h3>
+      <h3 className={styles.title}>{panelTitle}</h3>
       {loading ? (
         <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>
-          Loading news...
+          Loading {symbol ? `${symbol} news...` : 'news...'}
+        </div>
+      ) : news.length === 0 ? (
+        <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>
+          No recent stories found.
         </div>
       ) : (
         <ul className={styles.list}>

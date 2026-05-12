@@ -5,19 +5,17 @@
   },
   "nav": {
     "links": [
-      { "id": "dashboard", "label": "Dashboard", "to": "/dashboard" },
+      { "id": "dashboard", "label": "Dashboard", "to": "/" },
       { "id": "portfolio", "label": "Portfolio", "to": "/portfolio" },
       { "id": "alerts", "label": "Alerts", "to": "/alerts" },
-      { "id": "journal", "label": "Journal", "to": "/journal" },
-      { "id": "watchlist", "label": "Watchlist", "to": "/watchlist" },
-      { "id": "focus", "label": "Focus", "to": "/#focus" }
+      { "id": "watchlist", "label": "Watchlist", "to": "/watchlist" }
     ]
   },
   "hero": {
     "eyebrow": "Personal trading desk",
     "headline": "Trade smarter. Build patience. Grow the long game.",
     "subhead": "Branching beyond day trading into the kind of long-term positions that stories like Netflix and Amazon are made of — one careful step at a time.",
-    "primaryCta": { "label": "Open Dashboard", "to": "/dashboard" },
+    "primaryCta": { "label": "Open Dashboard", "to": "/" },
     "secondaryCta": { "label": "View Portfolio", "to": "/portfolio" }
   },
   "philosophy": {
@@ -25,30 +23,6 @@
     "body": "Markets reward consistency more than hero shots. After a rough month, the goal isn't to \"make it all back\" overnight — it's to protect capital, learn, and compound knowledge the same way we hope to compound returns.",
     "pullQuote": "I'm looking to branch out — not only day trading but long-term deals that turn out like Netflix or Amazon. Just have to take baby steps.",
     "pullAttribution": "The vision behind this site"
-  },
-  "focusAreas": {
-    "title": "Where energy goes",
-    "subtitle": "Inspired by full-service platforms — distilled into a personal playbook.",
-    "items": [
-      {
-        "id": "active",
-        "icon": "pulse",
-        "title": "Active trading",
-        "description": "Disciplined entries, defined risk, and journaling what actually worked — so intuition becomes process."
-      },
-      {
-        "id": "longterm",
-        "icon": "sprout",
-        "title": "Long-term positions",
-        "description": "Quality names, time in the market, and adding on dips instead of chasing every headline."
-      },
-      {
-        "id": "learn",
-        "icon": "book",
-        "title": "Continuous learning",
-        "description": "Earnings, macro trends, and position sizing — the boring stuff that keeps accounts alive."
-      }
-    ]
   },
   "journey": {
     "title": "The journey (JSON for now)",

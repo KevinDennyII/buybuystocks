@@ -161,7 +161,7 @@ export function WatchlistPage() {
           <span className="text-gradient">Watchlist</span>
         </h1>
         <div className={styles.actions}>
-          <Link to="/dashboard" className={styles.ghostBtn}>
+          <Link to="/" className={styles.ghostBtn}>
             Open Dashboard
           </Link>
           <button className={styles.ghostBtn} onClick={reset}>

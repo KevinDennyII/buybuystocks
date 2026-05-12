@@ -2,11 +2,10 @@ import { Link, useLocation } from 'react-router-dom';
 import styles from './MobileNav.module.css';
 
 const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Desk', icon: '📊' },
+  { to: '/', label: 'Desk', icon: '📊' },
   { to: '/watchlist', label: 'Watchlist', icon: '⭐' },
   { to: '/portfolio', label: 'Portfolio', icon: '💼' },
   { to: '/alerts', label: 'Alerts', icon: '🔔' },
-  { to: '/journal', label: 'Journal', icon: '📝' },
 ];
 
 export function MobileNav() {
